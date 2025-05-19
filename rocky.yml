@@ -1,0 +1,32 @@
+# rocky.yaml
+arch: "aarch64"
+images:
+  - location: "./images/Rocky-9-GenericCloud.latest.aarch64.qcow2"
+    arch: "aarch64"
+    digest: ""
+mounts:
+  - location: "~"
+    writable: true
+ssh:
+  loadDotSSHPubKeys: true
+containerd:
+  system: false
+  user: false
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      hostnamectl set-hostname rocky-quadlet
+      timedatectl set-timezone Europe/Berlin
+      dnf -y update
+      dnf -y install podman systemd-container git curl vim shadow
+      
+      useradd -m -s /sbin/nologin db
+      loginctl enable-linger db
+      
+      useradd -m -s /sbin/nologin webapp
+      loginctl enable-linger webapp
+
+firmware:
+  legacyBIOS: false
