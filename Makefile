@@ -2,7 +2,9 @@
 
 LIMACTL := $(shell which limactl)
 
-VM_NAME := rocky
+VM_NAME 	:= rocky
+IMAGE_NAME 	:= Rocky-9-GenericCloud.latest.aarch64.qcow2
+IMAGE_URL 	:= https://download.rockylinux.org/pub/rocky/9/images/aarch64/$(IMAGE_NAME)
 
 # define standard colors
 BLACK        := $(shell tput -Txterm setaf 0)
@@ -22,21 +24,35 @@ help:
 	@grep -E '^[a-z-]+:.*?## .*$$' Makefile | awk 'BEGIN {FS = ":.*?## "}; {printf "${GREEN}%-30s${RESET} %s\n", $$1, $$2}'
 	@echo "${YELLOW}--------------------------------------------------------------------------------${RESET}"
 
+fetch-image: image/$(IMAGE_NAME) ## Image für VM runterladen
 
-create: ## Erstellt die VM mit rocky.yml
+create: fetch-image ## Erstellt die VM mit rocky.yml
+	@echo "${GREEN}🛠️ Creating VM $(VM_NAME)${RESET}"
 	@$(LIMACTL) create --tty=false --name=$(VM_NAME) ./rocky.yml
 
 start: ## Startet die VM
+	@echo "${GREEN}🚀 Starting VM $(VM_NAME)${RESET}"
 	@$(LIMACTL) start $(VM_NAME)
 
 stop: ## Stoppt die VM
+	@echo "${GREEN}🚫 Stopping VM $(VM_NAME)${RESET}"
 	@$(LIMACTL) stop $(VM_NAME)
 
 shell: ## Eini SHH tuan.
 	@$(LIMACTL) shell $(VM_NAME)
 
 delete: ## Stoppt und löscht die VM
+	@echo "${GREEN}💣 Deleting VM  $(VM_NAME)${RESET}"
 	-@$(LIMACTL) stop -f $(VM_NAME)
 	@$(LIMACTL) delete $(VM_NAME)
 
 mr-proper: delete create start ## VM löschen, neu anlegen und starten.
+
+
+image/$(IMAGE_NAME):
+	@mkdir -p images
+	@test -f images/$(IMAGE_NAME) || { \
+  		echo "${YELLOW}📦 Fetching image ...${RESET}"; \
+		curl -o images/$(IMAGE_NAME) -L $(IMAGE_URL); \
+  		echo "${green}✅ Image downloaded.${RESET}"; \
+	}
