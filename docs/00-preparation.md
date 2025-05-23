@@ -1,3 +1,7 @@
+---
+title: Preparation
+subtitle: Steps needed to prepare podman, setting up the server etc.
+---
 # Preparation
 
 ### Using `machinectl` to change shells
