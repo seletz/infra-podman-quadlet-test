@@ -1,0 +1,15 @@
+[Unit]
+Description=Caddy
+
+[Container]
+Image=quay.io/zyclonite/caddy:latest
+PublishPort=8000:80
+PublishPort=8443:443
+Volume=%h/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
+Volume=caddy_data:/data
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

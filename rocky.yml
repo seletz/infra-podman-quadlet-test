@@ -7,11 +7,8 @@ images:
 mounts:
   - location: "~"
     writable: true
-  - location: "/Users/seletz/develop/research/lima/infra-podman-quadlet-test/users/db"
-    mountPoint: "/home/db"
-    writable: true
-  - location: "/Users/seletz/develop/research/lima/infra-podman-quadlet-test/users/webapp"
-    mountPoint: "/home/webapp"
+  - location: "~/develop/research/lima/infra-podman-quadlet-test"
+    mountPoint: "/mnt/project"
     writable: true
 ssh:
   loadDotSSHPubKeys: true
@@ -46,14 +43,20 @@ provision:
       systemctl enable firewalld
       systemctl start firewalld
 
-      systemctl enable cockpit
-      systemctl start cockpit
+      # systemctl enable cockpit
+      # systemctl start cockpit
       
-      useradd -s /bin/bash db
+      useradd -m -s /bin/bash db
       loginctl enable-linger db
       
-      useradd -s /bin/bash webapp
+      useradd -m -s /bin/bash webapp
       loginctl enable-linger webapp
+
+      for user in db webapp; do
+        mkdir -p /home/$user
+        cp -rT /mnt/project/users/$user /home/$user
+        chown -R $user:$user /home/$user
+      done
 
 firmware:
   legacyBIOS: false
