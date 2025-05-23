@@ -108,3 +108,54 @@ WantedBy=timers.target
 [firewalld verstehen](https://viertelwissen.de/firewalld-verstehen-und-benutzen-firewall-cmd/)
 [RHEL 7: Using Firewalls](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/security_guide/sec-using_firewalls)
 [RHEL 9: Firewalls and Packet Filters](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/using-and-configuring-firewalld_firewall-packet-filters)
+
+### User Mounts
+
+To be preserve the contzents of the `webapp` and `db` user homes, these directories are
+mounted from the host.
+
+```yaml
+mounts:
+  - location: "~"
+    writable: true
+  - location: "/Users/seletz/develop/research/lima/infra-podman-quadlet-test/users/db"
+    mountPoint: "/home/db"
+    writable: true
+  - location: "/Users/seletz/develop/research/lima/infra-podman-quadlet-test/users/webapp"
+    mountPoint: "/home/webapp"
+    writable: true
+```
+
+
+> [!Note]
+> Unfortunately `mounts[].location` is not allowed to be a relative path.  Also,
+> it seems `--set` in `create` is able to hanle only **one** expression.  Therefore,
+> I left the `location` absolute, which sucks badly.
+>
+> I **could** do some `sed` or `yq` shenanigans in the `Makefile`, but I want to keep
+> focused.
+
+```bash
+$ tree -a users
+users
+├── db
+│   ├── .bash_history
+│   ├── .config
+│   │   └── containers
+│   │       └── systemd
+│   ├── .local
+│   │   └── share
+│   │       └── containers
+│   │           └── storage
+│   │               └── volumes
+│   ├── containers -> /home/db/.config/containers/systemd
+│   └── volumes -> /home/db/.local/share/containers/storage/volumes
+└── webapp
+    └── .config
+
+12 directories, 3 files
+```
+
+> [!Note]
+> The symlinks above need to be valid in the **GUEST** system, and they have
+> been created in the guest.  That's why they point to `/home/db/...`
