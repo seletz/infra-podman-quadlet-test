@@ -1,0 +1,6 @@
+[Unit]
+Description=Caddy Data Volume
+
+[Volume]
+VolumeName=caddy-data
+Driver=local
