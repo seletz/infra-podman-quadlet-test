@@ -1,0 +1,30 @@
+name: Deploy Site
+
+on:
+  push:
+    branches: [develop]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: '0.7.5'
+          python-version: '3.12'
+
+      - name: Deploy to GitHub Pages
+        run: uvx --with mkdocs-material mkdocs gh-deploy --force
