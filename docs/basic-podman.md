@@ -103,7 +103,32 @@ Persistent=true
 WantedBy=timers.target
 ```
 
-### Firewall
+### Firewall and Networking
+
+> [!Warning]
+> Lima VMS **do not create any bridge network by default**.  One's supposed to
+> use **port forwarding**.
+
+```yaml
+portForwards:
+# Cockpit
+  - guestPort: 9090
+    hostPort: 9090
+# Web
+  - guestPort: 8080
+    hostPort: 8080
+# PostgreSQL
+  - guestPort: 5432
+    hostPort: 15432
+# ODOO
+  - guestPort: 8069
+    hostPort: 8069
+  - guestPort: 8072
+    hostPort: 8072
+```
+
+We'll later enable ports and services using the firewall.
+
 
 [firewalld verstehen](https://viertelwissen.de/firewalld-verstehen-und-benutzen-firewall-cmd/)
 [RHEL 7: Using Firewalls](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/security_guide/sec-using_firewalls)

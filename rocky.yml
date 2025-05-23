@@ -43,6 +43,9 @@ provision:
       dnf -y update
       dnf -y install cockpit podman systemd-container firewalld git curl vim shadow tree
 
+      systemctl enable firewalld
+      systemctl start firewalld
+
       systemctl enable cockpit
       systemctl start cockpit
       
