@@ -1,26 +1,4 @@
-# Basic Podman
-
-## Verison
-
-The podman version for reference:
-
-```bash
-$ podman version
-Client:       Podman Engine
-Version:      5.2.2
-API Version:  5.2.2
-Go Version:   go1.23.2 (Red Hat 1.23.2-1.el9)
-Built:        Tue May  6 18:29:02 2025
-OS/Arch:      linux/arm64
-```
-
-## Online Docs
-
-
-- [Einführung in Podman](https://viertelwissen.de/einfuehrung-in-podman/)
-
-
-## Preparation
+# Preparation
 
 ### Using machinectl to change shells
 
@@ -184,3 +162,12 @@ users
 > [!Note]
 > The symlinks above need to be valid in the **GUEST** system, and they have
 > been created in the guest.  That's why they point to `/home/db/...`
+
+### Cockpit
+
+Cockpit is a WEB UI for server management.  The `rocky.yaml` installs and enables it.  The `9090`
+port for cockpit is forwarded to the host.  Access cockpit as https://localhost:9090
+
+> [!Note]
+> LIMA does NOT set a password for your user.  If you want to use cockpit,
+> set a password, e.g. `sudo passwd <<username>>`.
