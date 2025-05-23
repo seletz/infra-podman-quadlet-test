@@ -7,11 +7,32 @@ images:
 mounts:
   - location: "~"
     writable: true
+  - location: "/Users/seletz/develop/research/lima/infra-podman-quadlet-test/users/db"
+    mountPoint: "/home/db"
+    writable: true
+  - location: "/Users/seletz/develop/research/lima/infra-podman-quadlet-test/users/webapp"
+    mountPoint: "/home/webapp"
+    writable: true
 ssh:
   loadDotSSHPubKeys: true
 containerd:
   system: false
   user: false
+portForwards:
+# Cockpit
+  - guestPort: 9090
+    hostPort: 9090
+# Web
+  - guestPort: 8080
+    hostPort: 8080
+# PostgreSQL
+  - guestPort: 5432
+    hostPort: 15432
+# ODOO
+  - guestPort: 8069
+    hostPort: 8069
+  - guestPort: 8072
+    hostPort: 8072
 provision:
   - mode: system
     script: |
@@ -20,12 +41,15 @@ provision:
       hostnamectl set-hostname rocky-quadlet
       timedatectl set-timezone Europe/Berlin
       dnf -y update
-      dnf -y install podman systemd-container git curl vim shadow
+      dnf -y install cockpit podman systemd-container firewalld git curl vim shadow tree
+
+      systemctl enable cockpit
+      systemctl start cockpit
       
-      useradd -m -s /sbin/nologin db
+      useradd -s /bin/bash db
       loginctl enable-linger db
       
-      useradd -m -s /sbin/nologin webapp
+      useradd -s /bin/bash webapp
       loginctl enable-linger webapp
 
 firmware:

@@ -5,6 +5,7 @@ LIMACTL := $(shell which limactl)
 VM_NAME 	:= rocky
 IMAGE_NAME 	:= Rocky-9-GenericCloud.latest.aarch64.qcow2
 IMAGE_URL 	:= https://download.rockylinux.org/pub/rocky/9/images/aarch64/$(IMAGE_NAME)
+PROJECT_DIR := $(shell pwd)
 
 # define standard colors
 BLACK        := $(shell tput -Txterm setaf 0)
@@ -28,7 +29,8 @@ fetch-image: image/$(IMAGE_NAME) ## Image für VM runterladen
 
 create: fetch-image ## Erstellt die VM mit rocky.yml
 	@echo "${GREEN}🛠️ Creating VM $(VM_NAME)${RESET}"
-	@$(LIMACTL) create --tty=false --name=$(VM_NAME) ./rocky.yml
+	$(LIMACTL) create --tty=false --name=$(VM_NAME) \
+	./rocky.yml
 
 start: ## Startet die VM
 	@echo "${GREEN}🚀 Starting VM $(VM_NAME)${RESET}"
