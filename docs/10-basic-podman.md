@@ -36,9 +36,10 @@ Add a timer to do this automatically:
 $ sudo systemctl enable podman-auto-update.timer --now
 ```
 
-> [!Note]
-> For containers running as non-root users, this must be
-> a timer service needs to be added for each user.
+!!! note
+
+    For containers running as non-root users, this must be
+    a timer service needs to be added for each user.
 
 ```bash
 $ sudo machinectl shell --uid webapp

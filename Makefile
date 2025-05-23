@@ -1,5 +1,6 @@
 .PHONY: help create start stop shell delete mr-proper
 
+UVX		:= $(shell which uvx)
 LIMACTL := $(shell which limactl)
 
 VM_NAME 	:= rocky
@@ -49,6 +50,9 @@ delete: ## Stoppt und löscht die VM
 	@$(LIMACTL) delete $(VM_NAME)
 
 mr-proper: delete create start ## VM löschen, neu anlegen und starten.
+
+serve-docs: ## Dokumentation serve
+	$(UVX) --with mkdocs-material mkdocs serve -a localhost:8080
 
 
 image/$(IMAGE_NAME):
